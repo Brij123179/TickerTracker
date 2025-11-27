@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TickerTracker - Live Data</title>
+</head>
+<body>
+
+<h1>Live Stock Tracker</h1>
+
+<div id="result"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const stocks = ["RELIANCE.NS", "TCS.NS", "INFY.NS", "HDFCBANK.NS"];
+    const resultDiv = document.getElementById("result");
+
+    async function fetchStock(symbol) {
+        try {
+            const res = await fetch(`/get_stock?symbol=${symbol}`);
+            const data = await res.json();
+            return { symbol, data };
+        } catch (err) {
+            return { symbol, data: { error: err.message } };
+        }
+    }
+
+    async function updateStocks() {
+        resultDiv.innerHTML = "<p>Loading data...</p>";
+
+        const promises = stocks.map(fetchStock);
+        const results = await Promise.all(promises);
+
+        let html = "";
+        results.forEach(res => {
+            const data = res.data;
+            if (data.error) {
+                html += `<p>${res.symbol} - Error: ${data.error}</p>`;
+            } else {
+                html += `
+                    <h3>${res.symbol}</h3>
+                    <p>Date: ${data.latest_time}</p>
+                    <p>Open: ${data.open}</p>
+                    <p>High: ${data.high}</p>
+                    <p>Low: ${data.low}</p>
+                    <p>Close: ${data.close}</p>
+                    <p>Volume: ${data.volume}</p>
+                    <hr>
+                `;
+            }
+        });
+
+        resultDiv.innerHTML = html;
+    }
+
+    updateStocks();                // Initial load
+    setInterval(updateStocks, 60000); // Refresh every 60 seconds
+});
+</script>
+
+</body>
+</html>

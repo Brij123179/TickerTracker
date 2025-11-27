@@ -1,0 +1,23 @@
+[
+  {
+    "id": "user_1",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "membership": "Premium Member",
+    "memberSince": "2023-01-15",
+    "subscription": {
+      "plan": "Pro",
+      "nextBillingDate": "2024-10-15"
+    },
+    "settings": {
+      "emailNotifications": true,
+      "pushNotifications": true,
+      "smsAlerts": false,
+      "portfolioVisibility": true,
+      "shareActivity": false,
+      "dataAnalytics": true
+    },
+    "createdAt": "2023-01-15T10:30:00.000Z",
+    "updatedAt": "2025-09-19T07:50:06.799Z"
+  }
+]

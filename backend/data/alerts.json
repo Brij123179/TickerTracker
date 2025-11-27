@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1758268144345",
+    "ticker": "AAPL",
+    "condition": "Price above ₹14604.55",
+    "targetPrice": 14604.55,
+    "isActive": true,
+    "createdAt": "2025-09-19T07:49:04.346Z",
+    "expiresAt": "2025-09-20T07:49:04.318Z"
+  },
+  {
+    "id": "1758268152637",
+    "ticker": "GOOGL",
+    "condition": "Price above ₹11505.98",
+    "targetPrice": 11505.98,
+    "isActive": true,
+    "createdAt": "2025-09-19T07:49:12.637Z",
+    "expiresAt": "2025-09-20T07:49:12.613Z"
+  },
+  {
+    "id": "1758268164590",
+    "ticker": "RELIANCE",
+    "condition": "Price above ₹2850.5",
+    "targetPrice": 2850.5,
+    "isActive": true,
+    "createdAt": "2025-09-19T07:49:24.590Z",
+    "expiresAt": "2025-09-20T07:49:24.565Z"
+  },
+  {
+    "id": "1758268171991",
+    "ticker": "ICICIBANK",
+    "condition": "Price above ₹1100.4",
+    "targetPrice": 1100.4,
+    "isActive": true,
+    "createdAt": "2025-09-19T07:49:31.991Z",
+    "expiresAt": "2025-09-20T07:49:31.963Z"
+  },
+  {
+    "id": "1764231826577",
+    "ticker": "ETH",
+    "condition": "Price above $3022.8",
+    "targetPrice": 3022.8,
+    "isActive": true,
+    "createdAt": "2025-11-27T08:23:46.577Z",
+    "expiresAt": "2025-11-28T08:23:46.557Z"
+  }
+]

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US Stock Market - Top 50 Companies</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        #status {
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            height: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #4a69bd;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        .positive { color: #2ecc71; }
+        .negative { color: #e74c3c; }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #4a69bd;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>US Market - Top 50 Companies (Real-Time Data)</h1>
+        <div id="status"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Company</th>
+                    <th>Ticker</th>
+                    <th>Price (USD)</th>
+                    <th>Change</th>
+                    <th>% Change</th>
+                    <th>Market Cap</th>
+                </tr>
+            </thead>
+            <tbody id="stock-data-body">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        const stockTableBody = document.getElementById('stock-data-body');
+        const statusDiv = document.getElementById('status');
+
+       
+        function formatNumber(num) {
+            if (num === null || num === undefined) return 'N/A';
+            return num.toLocaleString('en-US');
+        }
+
+        function formatMarketCap(num) {
+            if (num === null || num === 0) return 'N/A';
+            if (num >= 1e12) {
+                return (num / 1e12).toFixed(2) + ' T';
+            } else if (num >= 1e9) {
+                return (num / 1e9).toFixed(2) + ' B';
+            } else {
+                return formatNumber(num);
+            }
+        }
+
+        async function fetchStockData() {
+            statusDiv.innerHTML = '<div class="loader"></div>Fetching latest data...';
+            try {
+                const response = await fetch('/api/data');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const stocks = await response.json();
+
+                
+                updateTable(stocks);
+
+                
+                const now = new Date();
+                statusDiv.innerText = `Last updated: ${now.toLocaleTimeString()}`;
+
+            } catch (error) {
+                console.error("Error fetching stock data:", error);
+                statusDiv.innerText = "Error loading data. Will retry...";
+            }
+        }
+
+        function updateTable(stocks) {
+            stockTableBody.innerHTML = ''; 
+
+            stocks.forEach((stock, index) => {
+                const changeClass = stock.change >= 0 ? 'positive' : 'negative';
+                const sign = stock.change >= 0 ? '+' : '';
+
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${stock.name}</td>
+                        <td>${stock.ticker}</td>
+                        <td>$${stock.price ? stock.price.toFixed(2) : 'N/A'}</td>
+                        <td class="${changeClass}">${sign}${stock.change ? stock.change.toFixed(2) : 'N/A'}</td>
+                        <td class="${changeClass}">${sign}${stock.change_percent ? stock.change_percent.toFixed(2) : 'N/A'}%</td>
+                        <td>$${formatMarketCap(stock.market_cap)}</td>
+                    </tr>
+                `;
+                stockTableBody.innerHTML += row;
+            });
+        }
+
+        
+        fetchStockData();
+
+       
+        setInterval(fetchStockData, 15000); 
+    </script>
+
+</body>
+</html>

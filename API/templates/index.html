@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Indian Market Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body{font-family:Arial;margin:20px;}
+        table{border-collapse: collapse;width:100%;}
+        th,td{border:1px solid #ccc;padding:8px;text-align:left;}
+    </style>
+</head>
+<body>
+
+<h1>Indian Market Dashboard</h1>
+
+<h2>Market Mood</h2>
+<div id="market_mood"></div>
+
+<h2>Sector Sentiment</h2>
+<div id="sector_sentiment"></div>
+
+<h2>Upcoming Events</h2>
+<div id="events"></div>
+
+<h2>Stocks</h2>
+<div id="stocks"></div>
+
+<h2>Reliance - Price Trend</h2>
+<canvas id="priceChart" width="600" height="300"></canvas>
+
+<h2>Reliance - Mood Trend</h2>
+<canvas id="moodChart" width="600" height="300"></canvas>
+
+<h2>Market Emotion Heatmap</h2>
+<div id="market_heatmap" style="display:flex;flex-wrap:wrap;"></div>
+
+<script>
+let priceChart, moodChart;
+
+async function updateDashboard(){
+    const res = await fetch("/get_market_data");
+    const data = await res.json();
+
+    // Market Mood
+    document.getElementById("market_mood").innerText = `Mood: ${data.market_mood.mood} | Confidence: ${data.market_mood.confidence}%`;
+
+    // Sector Sentiment
+    let sec_html='';
+    for(const [sec,val] of Object.entries(data.sector_sentiment)){
+        sec_html+=`${sec}: ${val}% | `;
+    }
+    document.getElementById("sector_sentiment").innerText = sec_html;
+
+    // Upcoming Events
+    let ev_html='';
+    data.upcoming_events.forEach(e=>{
+        ev_html+=`${e.event} | Date: ${e.date} | Impact: ${e.impact} | Predicted: ${e.predicted}\n`;
+    });
+    document.getElementById("events").innerText = ev_html;
+
+    // Stocks Table
+    let stock_html = `<table><tr><th>Symbol</th><th>Company</th><th>Price</th><th>Change</th><th>30d%</th><th>Volatility</th><th>Risk</th></tr>`;
+    data.stocks.forEach(s=>{
+        stock_html+=`<tr>
+            <td>${s.symbol}</td>
+            <td>${s.company}</td>
+            <td>${s.price}</td>
+            <td>${s.change} (${s.change_percent}%)</td>
+            <td>${s.change_percent}</td>
+            <td>${s.volatility_percent}%</td>
+            <td>${s.risk}</td>
+        </tr>`;
+    });
+    stock_html+="</table>";
+    document.getElementById("stocks").innerHTML = stock_html;
+
+    // Charts
+    const labels = data.history.price_trend.map(p=>p.date);
+    const prices = data.history.price_trend.map(p=>p.close);
+    const sentiments = data.history.sentiment_trend.map(p=>p.sentiment);
+
+    const ctx = document.getElementById("priceChart").getContext("2d");
+    if(priceChart) priceChart.destroy();
+    priceChart=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'Price (₹)',data:prices,borderColor:'blue',fill:false}]}});
+
+    const ctx2 = document.getElementById("moodChart").getContext("2d");
+    if(moodChart) moodChart.destroy();
+    moodChart=new Chart(ctx2,{type:'line',data:{labels:labels,datasets:[{label:'Mood Sentiment',data:sentiments,borderColor:'green',fill:false}]}});
+
+    // Market Emotion Heatmap
+    let heatmap_html = '';
+    data.market_heatmap.forEach(s=>{
+        let color = s.change_percent > 0 ? '#c6f6d5' : s.change_percent < 0 ? '#fed7d7' : '#fefcbf';
+        heatmap_html+=`<div style="border:1px solid #ccc;margin:5px;padding:10px;width:120px;text-align:center;background:${color};border-radius:5px;">
+            ${s.emoji}<br>
+            ${s.symbol}<br>
+            ${s.change_percent}%
+        </div>`;
+    });
+    document.getElementById("market_heatmap").innerHTML = heatmap_html;
+}
+
+updateDashboard();
+setInterval(updateDashboard,10000); // update every 10 sec
+</script>
+
+</body>
+</html>

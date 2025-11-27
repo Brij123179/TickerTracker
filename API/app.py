@@ -49,5 +49,7 @@ def get_stock_details(symbol):
     events = upcoming_events()
     return jsonify({"history": history or {}, "upcoming_events": events})
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+if __name__ == '__main__':
+    print('🚀 Starting API Service for Indian/US Stocks...')
+    print('📊 Service will be available at: http://localhost:5001')
+    app.run(host='0.0.0.0', port=5001, debug=True)

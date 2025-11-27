@@ -7,6 +7,7 @@ const path = require("path");
 const alphaVantage = require("../services/alphaVantageService");
 const coinGecko = require("../services/coinGeckoService");
 const crypto1 = require("../services/crypto1Service");
+const apiService = require("../services/apiService");
 const mockData = require("../services/mockDataService");
 const userService = require("../services/userService");
 const newsService = require("../services/newsService");
@@ -34,20 +35,49 @@ router.get("/stocks/:market", async (req, res) => {
     let stocks = [];
 
     if (market.toLowerCase() === "us") {
-      console.log('📊 Fetching US market data...');
+      console.log('📊 Fetching US market data from all sources...');
+      
+      // Try Flask API first
       try {
-        stocks = await alphaVantage.getUSStocks();
-        console.log(`✅ Loaded ${stocks.length} US stocks from Alpha Vantage`);
-      } catch (error) {
-        console.warn('⚠️ Alpha Vantage unavailable, using mock US data');
-        stocks = mockData.getUSStocks();
+        const apiStocks = await apiService.getUSStocksFromAPI();
+        if (apiStocks && apiStocks.length > 0) {
+          stocks = apiStocks;
+          console.log(`✅ Loaded ${stocks.length} US stocks from Flask API`);
+        } else {
+          throw new Error('Flask API returned no data');
+        }
+      } catch (apiError) {
+        console.log('⚠️ Flask API unavailable, trying Alpha Vantage...');
+        
+        // Try Alpha Vantage as fallback
+        try {
+          stocks = await alphaVantage.getUSStocks();
+          console.log(`✅ Loaded ${stocks.length} US stocks from Alpha Vantage`);
+        } catch (avError) {
+          console.warn('⚠️ Alpha Vantage also unavailable, using mock US data');
+          stocks = mockData.getUSStocks();
+          console.log(`✅ Loaded ${stocks.length} US stocks from mock data`);
+        }
       }
     } else if (market.toLowerCase() === "indian") {
-      console.log('📊 Fetching Indian market data...');
-      stocks = mockData.getIndianStocks();
-      console.log(`✅ Loaded ${stocks.length} Indian stocks`);
+      console.log('📊 Fetching Indian market data from all sources...');
+      
+      // Try Flask API first
+      try {
+        const apiStocks = await apiService.getIndianStocks();
+        if (apiStocks && apiStocks.length > 0) {
+          stocks = apiStocks;
+          console.log(`✅ Loaded ${stocks.length} Indian stocks from Flask API`);
+        } else {
+          throw new Error('Flask API returned no data');
+        }
+      } catch (error) {
+        console.log('⚠️ Flask API unavailable, using mock Indian data');
+        stocks = mockData.getIndianStocks();
+        console.log(`✅ Loaded ${stocks.length} Indian stocks from mock data`);
+      }
     } else if (market.toLowerCase() === "crypto") {
-      console.log('🚀 Using CRYPTO1 service for real-time crypto data');
+      console.log('📊 Fetching crypto data from all sources...');
       stocks = await crypto1.getCryptoData();
       console.log(`✅ Loaded ${stocks.length} cryptocurrencies`);
     } else {

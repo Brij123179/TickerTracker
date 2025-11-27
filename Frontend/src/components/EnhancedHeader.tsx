@@ -8,15 +8,11 @@ import {
   Bell,
   Heart,
   MessageCircle,
-  BarChart3,
   LogOut,
-  Menu,
+  AlignJustify,
   X,
   TrendingUp,
-  Home,
-  Wallet,
-  FileText,
-  Activity,
+  LayoutDashboard,
 } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useData } from "../contexts/DataContext";
@@ -61,7 +57,7 @@ export const EnhancedHeader: React.FC<EnhancedHeaderProps> = ({
   };
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'watchlist', label: 'Watchlist', icon: Heart },
     { id: 'alerts', label: 'Alerts', icon: Bell },
     { id: 'chat', label: 'AI Chat', icon: MessageCircle },
@@ -81,7 +77,7 @@ export const EnhancedHeader: React.FC<EnhancedHeaderProps> = ({
                 {showMobileMenu ? (
                   <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 ) : (
-                  <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                  <AlignJustify className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
               

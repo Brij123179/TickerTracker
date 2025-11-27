@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   ArrowUpRight,
   ArrowDownRight,
   TrendingUp,
   TrendingDown,
   Activity,
-  Eye,
   Star,
   Filter,
   Download,
   RefreshCw,
-  BarChart2,
-  PieChart,
-  LineChart,
-  Maximize2,
+  BarChart3,
+  Grid3x3,
+  List,
+  EyeIcon,
 } from "lucide-react";
 import { useData } from "../contexts/DataContext";
 
@@ -111,10 +110,10 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ onTickerSe
         {/* Market Overview Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 card-hover border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Market Cap</span>
-              <PieChart className="w-4 h-4 text-blue-500" />
-            </div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Market Cap</span>
+                <Grid3x3 className="w-4 h-4 text-blue-500" />
+              </div>
             <p className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">
               {selectedMarket === 'Indian' ? '₹' : '$'}{(marketStats.totalMarketCap / 1000).toFixed(1)}B
             </p>
@@ -147,10 +146,10 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ onTickerSe
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 card-hover border border-gray-100 dark:border-gray-700 col-span-2 sm:col-span-3 lg:col-span-1">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Volume</span>
-              <BarChart2 className="w-4 h-4 text-indigo-500" />
-            </div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Volume</span>
+                <BarChart3 className="w-4 h-4 text-indigo-500" />
+              </div>
             <p className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">
               {(marketStats.totalVolume / 1000000000).toFixed(2)}B
             </p>
@@ -180,7 +179,7 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ onTickerSe
                       : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
                   }`}
                 >
-                  <LineChart className="w-4 h-4" />
+                  <List className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('grid')}
@@ -190,7 +189,7 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ onTickerSe
                       : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
                   }`}
                 >
-                  <PieChart className="w-4 h-4" />
+                  <Grid3x3 className="w-4 h-4" />
                 </button>
               </div>
 
@@ -381,7 +380,7 @@ export const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ onTickerSe
                           }}
                           className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-xs sm:text-sm"
                         >
-                          <Eye className="w-4 h-4" />
+                          <EyeIcon className="w-4 h-4" />
                         </button>
                       </td>
                     </tr>

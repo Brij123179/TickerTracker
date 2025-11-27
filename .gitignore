@@ -4,6 +4,10 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+venv/
+env/
+API/venv/
+CRYPTO1/CRYPTO/venv/
 
 # Environment variables
 .env
